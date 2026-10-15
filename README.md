@@ -125,3 +125,19 @@ The callback base URL must be reachable by the gateway. A localhost URL is not p
 - Verify a Customer cannot view another Customer's booking/payment.
 - Test demo payment only in Development with the explicit setting enabled.
 - If configured, test SSLCOMMERZ success/fail/cancel callbacks using sandbox transactions.
+
+
+## Screenshots
+
+### Homepage
+![Homepage](screenshots/homepage.png)
+
+### User Dashboard
+![User Dashboard](screenshots/user-dashboard.png)
+
+### Admin Dashboard
+![Admin Dashboard](screenshots/admin-dashboard.png)
+
+### Payment Receipt
+![Payment Receipt](screenshots/payment-receipt.png)
+
