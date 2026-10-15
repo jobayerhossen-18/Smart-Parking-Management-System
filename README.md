@@ -128,16 +128,4 @@ The callback base URL must be reachable by the gateway. A localhost URL is not p
 
 
 ## Screenshots
-
-### Homepage
-![Homepage](screenshots/homepage.png)
-
-### User Dashboard
-![User Dashboard](screenshots/user-dashboard.png)
-
-### Admin Dashboard
-![Admin Dashboard](screenshots/admin-dashboard.png)
-
-### Payment Receipt
-![Payment Receipt](screenshots/payment-receipt.png)
-
+Given in screenshots folder
