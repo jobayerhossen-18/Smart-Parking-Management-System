@@ -1,0 +1,89 @@
+@model ReportViewModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<h2 class="mb-3"><i class="bi bi-bar-chart"></i> Reports</h2>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-auto">
+        <label class="form-label mb-0 small">From</label>
+        <input type="date" name="from" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+    </div>
+    <div class="col-auto">
+        <label class="form-label mb-0 small">To</label>
+        <input type="date" name="to" value="@(Model.ToDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a asp-controller="Report" asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+    </div>
+</form>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6 class="text-muted">User Report</h6>
+            <h3>@Model.TotalRegisteredUsers</h3>
+            <div class="small">Total registered users</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6 class="text-muted">Parking Report</h6>
+            <h3>@Model.TotalParkingSessions</h3>
+            <div class="small">Total parking sessions</div>
+            <div class="small text-muted">Occupied: @Model.OccupiedSlots &middot; Available: @Model.AvailableSlots</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6 class="text-muted">Booking Report</h6>
+            <h3>@Model.TotalBookings</h3>
+            <div class="small">Completed: @Model.CompletedBookings &middot; Cancelled: @Model.CancelledBookings</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h6 class="text-muted">Revenue Report</h6>
+            <h3>@Model.TotalRevenueCollected.ToString("0.00")</h3>
+            <div class="small">Total parking fees collected (BDT)</div>
+        </div>
+    </div>
+</div>
+
+<h5>Payment Records</h5>
+<div class="card p-3">
+    @if (!Model.PaymentRecords.Any())
+    {
+        <p class="text-muted mb-0">No payment records in this range.</p>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Payment ID</th>
+                    <th>Booking</th>
+                    <th>Amount (BDT)</th>
+                    <th>Method</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.PaymentRecords)
+                {
+                    <tr>
+                        <td>#@p.PaymentID</td>
+                        <td>#@p.BookingID</td>
+                        <td>@p.Amount.ToString("0.00")</td>
+                        <td>@p.PaymentMethod</td>
+                        <td>@p.PaymentDate.ToString("dd MMM yyyy")</td>
+                        <td><span class="badge @(p.PaymentStatus == PaymentStatus.Paid ? "bg-success" : "bg-secondary")">@p.PaymentStatus</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

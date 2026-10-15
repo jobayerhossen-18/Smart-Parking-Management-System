@@ -1,0 +1,31 @@
+@model List<ParkingRate>
+@{
+    ViewData["Title"] = "Parking Rates";
+}
+
+<h2 class="mb-3"><i class="bi bi-cash-stack"></i> Manage Parking Rates</h2>
+
+<div class="row g-3">
+    @foreach (var r in Model)
+    {
+        <div class="col-md-6">
+            <div class="card p-3">
+                <h5 class="mb-3"><i class="bi bi-car-front"></i> @r.VehicleType</h5>
+                <form asp-controller="Admin" asp-action="UpdateRate" method="post" class="row g-2 align-items-end">
+                    <input type="hidden" name="rateId" value="@r.RateID" />
+                    <div class="col-6">
+                        <label class="form-label">Hourly Rate (BDT)</label>
+                        <input type="number" step="0.01" name="hourlyRate" value="@r.HourlyRate" class="form-control" />
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Min. Hours</label>
+                        <input type="number" name="minimumChargeHours" value="@r.MinimumChargeHours" class="form-control" />
+                    </div>
+                    <div class="col-2">
+                        <button type="submit" class="btn btn-primary w-100">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,45 @@
+@model List<Vehicle>
+@{
+    ViewData["Title"] = "My Vehicles";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-car-front"></i> My Vehicles</h2>
+    <a asp-controller="Vehicle" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Vehicle</a>
+</div>
+
+<div class="card p-3">
+    @if (!Model.Any())
+    {
+        <p class="text-muted text-center mb-0 py-4">You haven't added any vehicles yet.</p>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Registration No.</th>
+                    <th>Type</th>
+                    <th>Model</th>
+                    <th>Color</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var v in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@v.RegistrationNumber</td>
+                        <td>@v.VehicleType</td>
+                        <td>@v.Model</td>
+                        <td>@v.Color</td>
+                        <td class="text-end">
+                            <a asp-controller="Vehicle" asp-action="Edit" asp-route-id="@v.VehicleID" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a asp-controller="Vehicle" asp-action="Delete" asp-route-id="@v.VehicleID" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

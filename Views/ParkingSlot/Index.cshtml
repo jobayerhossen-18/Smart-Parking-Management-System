@@ -1,0 +1,61 @@
+@model List<ParkingSlot>
+@{
+    ViewData["Title"] = "Parking Slots";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-grid-3x3-gap"></i> Parking Slots</h2>
+    <a asp-controller="ParkingSlot" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Slot</a>
+</div>
+
+<div class="card p-3">
+    @if (!Model.Any())
+    {
+        <p class="text-muted text-center mb-0 py-4">No parking slots configured yet.</p>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Slot No.</th>
+                    <th>Floor/Zone</th>
+                    <th>Vehicle Type</th>
+                    <th>Status</th>
+                    <th>Hourly Rate (BDT)</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@s.SlotNumber</td>
+                        <td>@s.Floor</td>
+                        <td>@s.VehicleType</td>
+                        <td><span class="badge slot-badge-@s.Status">@s.Status</span></td>
+                        <td>@s.HourlyRate.ToString("0.00")</td>
+                        <td class="text-end">
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Status</button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    @foreach (var st in Enum.GetValues<SlotStatus>())
+                                    {
+                                        <li>
+                                            <form asp-controller="ParkingSlot" asp-action="ChangeStatus" asp-route-id="@s.SlotID" method="post">
+                                                <input type="hidden" name="status" value="@st" />
+                                                <button type="submit" class="dropdown-item">@st</button>
+                                            </form>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                            <a asp-controller="ParkingSlot" asp-action="Edit" asp-route-id="@s.SlotID" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a asp-controller="ParkingSlot" asp-action="Delete" asp-route-id="@s.SlotID" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

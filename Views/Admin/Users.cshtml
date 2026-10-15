@@ -1,0 +1,43 @@
+@model List<ApplicationUser>
+@{
+    ViewData["Title"] = "Manage Users";
+    var roles = (Dictionary<string, string>)ViewBag.UserRoles;
+}
+
+<h2 class="mb-3"><i class="bi bi-people"></i> Manage Users</h2>
+
+<div class="card p-3">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.FullName</td>
+                    <td>@u.Email</td>
+                    <td>@u.PhoneNumber</td>
+                    <td><span class="badge bg-primary">@roles[u.Id]</span></td>
+                    <td>@u.CreatedAt.ToString("dd MMM yyyy")</td>
+                    <td class="text-end">
+                        <a asp-controller="Admin" asp-action="UserDetails" asp-route-id="@u.Id" class="btn btn-sm btn-outline-primary">View</a>
+                        @if (roles[u.Id] != Roles.Admin)
+                        {
+                            <form asp-controller="Admin" asp-action="ToggleLock" asp-route-id="@u.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-warning">Toggle Lock</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

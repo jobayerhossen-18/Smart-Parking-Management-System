@@ -1,0 +1,31 @@
+@model Payment
+@{
+    ViewData["Title"] = "Payment Details";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h3 class="mb-3"><i class="bi bi-receipt"></i> Payment #@Model.PaymentID</h3>
+            <dl class="row">
+                <dt class="col-sm-5">Booking</dt><dd class="col-sm-7">#@Model.BookingID</dd>
+                <dt class="col-sm-5">Vehicle</dt><dd class="col-sm-7">@Model.Booking?.Vehicle?.RegistrationNumber</dd>
+                <dt class="col-sm-5">Parking Slot</dt><dd class="col-sm-7">@Model.Booking?.ParkingSlot?.SlotNumber</dd>
+                <dt class="col-sm-5">Amount</dt><dd class="col-sm-7 fw-bold">@Model.Amount.ToString("0.00") BDT</dd>
+                <dt class="col-sm-5">Payment Method</dt><dd class="col-sm-7">@Model.PaymentMethod</dd>
+                <dt class="col-sm-5">Payment Date</dt><dd class="col-sm-7">@Model.PaymentDate.ToString("dd MMM yyyy, hh:mm tt")</dd>
+                <dt class="col-sm-5">Status</dt>
+                <dd class="col-sm-7">
+                    <span class="badge @(Model.PaymentStatus == PaymentStatus.Paid ? "bg-success" : Model.PaymentStatus == PaymentStatus.Failed ? "bg-danger" : "bg-secondary")">@Model.PaymentStatus</span>
+                </dd>
+            </dl>
+            @if (User.IsInRole(Roles.Admin) && Model.PaymentStatus != PaymentStatus.Paid)
+            {
+                <form asp-controller="Payment" asp-action="MarkPaid" asp-route-id="@Model.PaymentID" method="post">
+                    <button type="submit" class="btn btn-success">Mark as Paid</button>
+                </form>
+            }
+            <a asp-controller="Payment" asp-action="PaymentHistory" class="btn btn-outline-secondary mt-2">Back to Payments</a>
+        </div>
+    </div>
+</div>

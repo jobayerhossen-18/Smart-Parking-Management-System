@@ -1,0 +1,41 @@
+@model Payment
+@{
+    ViewData["Title"] = "Money Receipt";
+    var receiptNo = $"SPR-{Model.PaymentID:D6}";
+    var booking = Model.Booking;
+    var paymentProvider = TempData["PaymentProvider"]?.ToString();
+    var isDemoPayment = TempData["DemoPayment"] != null;
+}
+<div class="d-flex justify-content-between align-items-center mb-3 no-print">
+    <div><span class="eyebrow">PAYMENT CONFIRMED</span><h2 class="fw-bold mb-0">Money Receipt</h2></div>
+    <button onclick="window.print()" class="btn btn-dark"><i class="bi bi-printer me-2"></i>Print Receipt</button>
+</div>
+<div class="receipt-paper receipt-paper-colorful">
+    <div class="receipt-color-strip"></div>
+    @if (isDemoPayment)
+    {
+        <div class="alert alert-info no-print mb-4"><i class="bi bi-info-circle-fill me-2"></i>This is a simulated local-development payment receipt. No real money was charged.</div>
+    }
+    <div class="receipt-head">
+        <div><h2 class="fw-bold mb-1"><i class="bi bi-p-circle-fill me-2"></i>Smart Parking</h2><p class="mb-0 text-muted">Smart Parking Management System</p></div>
+        <div class="text-end"><span class="paid-stamp">PAID</span><div class="small mt-2">Receipt <strong>@receiptNo</strong></div></div>
+    </div>
+    <hr />
+    <div class="row g-3 mb-4">
+        <div class="col-md-6"><small class="text-muted">Customer</small><div class="fw-semibold">@Model.User?.FullName</div></div>
+        <div class="col-md-6"><small class="text-muted">Payment Date</small><div class="fw-semibold">@Model.PaymentDate.ToString("dd MMM yyyy, hh:mm tt")</div></div>
+        <div class="col-md-6"><small class="text-muted">Booking ID</small><div class="fw-semibold">#@Model.BookingID</div></div>
+        <div class="col-md-6"><small class="text-muted">Payment Method</small><div class="fw-semibold">@(Model.PaymentMethod == PaymentMethod.Online ? (string.IsNullOrWhiteSpace(paymentProvider) ? "Online Payment" : paymentProvider) : "Offline Payment")</div></div>
+    </div>
+    <div class="table-responsive">
+        <table class="table receipt-table">
+            <thead><tr><th>Description</th><th>Details</th><th class="text-end">Amount</th></tr></thead>
+            <tbody>
+                <tr><td>Parking Service</td><td>Slot @booking?.ParkingSlot?.SlotNumber · @booking?.Vehicle?.RegistrationNumber</td><td class="text-end">@Model.Amount.ToString("0.00") BDT</td></tr>
+            </tbody>
+            <tfoot><tr><th colspan="2" class="text-end">Total Paid</th><th class="text-end fs-5">@Model.Amount.ToString("0.00") BDT</th></tr></tfoot>
+        </table>
+    </div>
+    <div class="receipt-note receipt-note-colorful mt-4"><i class="bi bi-check-circle-fill me-2"></i>Payment recorded successfully. Vehicle exit is authorized and the parking slot has been released.</div>
+    <div class="text-center text-muted small mt-4">Thank you for using Smart Parking · Please keep this receipt for your records.</div>
+</div>

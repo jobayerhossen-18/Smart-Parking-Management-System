@@ -1,0 +1,27 @@
+@model Booking
+@{
+    ViewData["Title"] = "Vehicle Check-Out";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h3 class="mb-3 text-warning"><i class="bi bi-box-arrow-right"></i> Vehicle Check-Out</h3>
+            <dl class="row">
+                <dt class="col-sm-4">Booking ID</dt><dd class="col-sm-8">#@Model.BookingID</dd>
+                <dt class="col-sm-4">Vehicle</dt><dd class="col-sm-8">@Model.Vehicle?.RegistrationNumber</dd>
+                <dt class="col-sm-4">Parking Slot</dt><dd class="col-sm-8">@Model.ParkingSlot?.SlotNumber</dd>
+                <dt class="col-sm-4">Checked In At</dt><dd class="col-sm-8">@Model.ParkingSession?.CheckInTime?.ToString("dd MMM yyyy, hh:mm tt")</dd>
+            </dl>
+            <div class="alert alert-info">
+                Estimated duration: <strong>@ViewBag.EstimatedHours hour(s)</strong><br />
+                Estimated fee: <strong>@(((decimal)ViewBag.EstimatedFee).ToString("0.00")) BDT</strong>
+                <div class="small text-muted">Final amount is calculated at the moment you confirm check-out.</div>
+            </div>
+            <form asp-controller="Parking" asp-action="CheckOut" asp-route-id="@Model.BookingID" method="post">
+                <button type="submit" class="btn btn-warning">Confirm Check-Out</button>
+                <a asp-controller="Booking" asp-action="Details" asp-route-id="@Model.BookingID" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

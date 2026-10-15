@@ -1,0 +1,44 @@
+@model ParkingSlot
+@{
+    ViewData["Title"] = "Add Parking Slot";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h3 class="mb-3"><i class="bi bi-plus-circle"></i> Add Parking Slot</h3>
+            <form asp-controller="ParkingSlot" asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                <div class="mb-3">
+                    <label asp-for="SlotNumber" class="form-label"></label>
+                    <input asp-for="SlotNumber" class="form-control" placeholder="e.g. A-01" />
+                    <span asp-validation-for="SlotNumber" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Floor" class="form-label"></label>
+                    <input asp-for="Floor" class="form-control" placeholder="e.g. Ground Floor" />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="VehicleType" class="form-label"></label>
+                    <select asp-for="VehicleType" asp-items="Html.GetEnumSelectList<VehicleType>()" class="form-select"></select>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" asp-items="Html.GetEnumSelectList<SlotStatus>()" class="form-select"></select>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="HourlyRate" class="form-label"></label>
+                    <input asp-for="HourlyRate" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="HourlyRate" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Slot</button>
+                <a asp-controller="ParkingSlot" asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

@@ -1,0 +1,99 @@
+@model Booking
+@{
+    ViewData["Title"] = "Booking Details";
+    bool isAdmin = User.IsInRole(Roles.Admin);
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h3><i class="bi bi-journal-text"></i> Booking #@Model.BookingID</h3>
+                <span class="badge booking-badge-@Model.Status fs-6">@Model.Status</span>
+            </div>
+
+            <dl class="row">
+                @if (isAdmin)
+                {
+                    <dt class="col-sm-4">Customer</dt><dd class="col-sm-8">@Model.User?.FullName (@Model.User?.Email)</dd>
+                }
+                <dt class="col-sm-4">Vehicle</dt><dd class="col-sm-8">@Model.Vehicle?.RegistrationNumber (@Model.Vehicle?.VehicleType)</dd>
+                <dt class="col-sm-4">Parking Slot</dt><dd class="col-sm-8">@Model.ParkingSlot?.SlotNumber - @Model.ParkingSlot?.Floor</dd>
+                <dt class="col-sm-4">Booking Date</dt><dd class="col-sm-8">@Model.BookingDate.ToString("dd MMM yyyy")</dd>
+                <dt class="col-sm-4">Expected Entry</dt><dd class="col-sm-8">@Model.ExpectedEntryTime.ToString("dd MMM yyyy, hh:mm tt")</dd>
+                <dt class="col-sm-4">Expected Exit</dt><dd class="col-sm-8">@Model.ExpectedExitTime.ToString("dd MMM yyyy, hh:mm tt")</dd>
+            </dl>
+
+            @if (Model.ParkingSession != null)
+            {
+                <hr />
+                <h5>Parking Session</h5>
+                <dl class="row">
+                    <dt class="col-sm-4">Check-in Time</dt><dd class="col-sm-8">@(Model.ParkingSession.CheckInTime?.ToString("dd MMM yyyy, hh:mm tt") ?? "-")</dd>
+                    <dt class="col-sm-4">Check-out Time</dt><dd class="col-sm-8">@(Model.ParkingSession.CheckOutTime?.ToString("dd MMM yyyy, hh:mm tt") ?? "-")</dd>
+                    @if (Model.ParkingSession.DurationMinutes.HasValue)
+                    {
+                        <dt class="col-sm-4">Duration</dt><dd class="col-sm-8">@(Math.Round(Model.ParkingSession.DurationMinutes.Value / 60, 2)) hours</dd>
+                    }
+                    @if (Model.ParkingSession.ParkingFee.HasValue)
+                    {
+                        <dt class="col-sm-4">Parking Fee</dt><dd class="col-sm-8 fw-bold">@Model.ParkingSession.ParkingFee.Value.ToString("0.00") BDT</dd>
+                    }
+                </dl>
+            }
+
+            @if (Model.Payment != null)
+            {
+                <hr />
+                <h5>Payment</h5>
+                <dl class="row">
+                    <dt class="col-sm-4">Amount</dt><dd class="col-sm-8">@Model.Payment.Amount.ToString("0.00") BDT</dd>
+                    <dt class="col-sm-4">Method</dt><dd class="col-sm-8">@Model.Payment.PaymentMethod</dd>
+                    <dt class="col-sm-4">Status</dt><dd class="col-sm-8">@Model.Payment.PaymentStatus</dd>
+                </dl>
+            }
+
+            <hr />
+            <div class="d-flex flex-wrap gap-2">
+                @if (Model.Status == BookingStatus.Confirmed && Model.ParkingSession == null)
+                {
+                    <a asp-controller="Parking" asp-action="CheckIn" asp-route-id="@Model.BookingID" class="btn btn-success"><i class="bi bi-box-arrow-in-right"></i> Check In</a>
+                }
+                @if (Model.ParkingSession?.CheckInTime != null && Model.ParkingSession.CheckOutTime == null)
+                {
+                    <a asp-controller="Parking" asp-action="CheckOut" asp-route-id="@Model.BookingID" class="btn btn-warning"><i class="bi bi-box-arrow-right"></i> Check Out</a>
+                }
+                @if (!isAdmin && (Model.Status == BookingStatus.Pending || (Model.Status == BookingStatus.Confirmed && Model.ParkingSession == null)))
+                {
+                    <a asp-controller="Booking" asp-action="Cancel" asp-route-id="@Model.BookingID" class="btn btn-outline-danger">@(Model.Status == BookingStatus.Confirmed ? "Cancel & Pay" : "Cancel Booking")</a>
+                }
+                @if (!isAdmin && Model.Payment != null && Model.Payment.PaymentStatus == PaymentStatus.Pending)
+                {
+                    <a asp-controller="Payment" asp-action="Pay" asp-route-id="@Model.Payment.PaymentID" class="btn btn-primary"><i class="bi bi-credit-card me-1"></i> Pay @Model.Payment.Amount.ToString("0.00") BDT</a>
+                }
+                @if (!isAdmin && Model.Payment != null && Model.Payment.PaymentStatus == PaymentStatus.Paid)
+                {
+                    <a asp-controller="Payment" asp-action="Receipt" asp-route-id="@Model.Payment.PaymentID" class="btn btn-success"><i class="bi bi-receipt me-1"></i> View Receipt</a>
+                }
+                @if (isAdmin)
+                {
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Change Status</button>
+                        <ul class="dropdown-menu">
+                            @foreach (var st in Enum.GetValues<BookingStatus>())
+                            {
+                                <li>
+                                    <form asp-controller="Booking" asp-action="UpdateStatus" asp-route-id="@Model.BookingID" method="post">
+                                        <input type="hidden" name="status" value="@st" />
+                                        <button type="submit" class="dropdown-item">@st</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+                <a asp-controller="Booking" asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

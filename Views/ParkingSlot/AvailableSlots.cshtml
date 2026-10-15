@@ -1,0 +1,59 @@
+@model List<ParkingSlot>
+@{
+    ViewData["Title"] = "Available Parking Slots";
+}
+
+<div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+    <div><span class="eyebrow">LIVE AVAILABILITY</span><h1 class="fw-bold mb-1" style="letter-spacing:-.04em;">Choose your parking slot</h1><p class="text-muted mb-0">Only compatible spaces are shown for your selected vehicle type.</p></div>
+    <form method="get" class="d-flex gap-2 slot-toolbar">
+        <select name="vehicleType" class="form-select" onchange="this.form.submit()">
+            <option value="">All Vehicle Types</option>
+            @foreach (var t in Enum.GetValues<VehicleType>())
+            {
+                if (ViewBag.SelectedType != null && (VehicleType)ViewBag.SelectedType == t)
+                {
+                    <option value="@t" selected>@t</option>
+                }
+                else
+                {
+                    <option value="@t">@t</option>
+                }
+            }
+        </select>
+    </form>
+</div>
+
+<div class="row g-3">
+    @if (!Model.Any())
+    {
+        <p class="text-muted text-center py-4">No parking slots match this filter.</p>
+    }
+    @foreach (var s in Model)
+    {
+        <div class="col-md-6 col-xl-4">
+            <div class="card p-4 h-100 slot-card">
+                <div class="slot-topline"></div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div><div class="text-uppercase text-muted fw-bold" style="font-size:.7rem;letter-spacing:.1em;">Parking Space</div><div class="slot-number mt-1">@s.SlotNumber</div></div>
+                    <span class="badge slot-badge-@s.Status">@s.Status</span>
+                </div>
+                <div class="slot-meta mb-3">
+                    <span><i class="bi bi-layers me-1"></i>@s.Floor</span>
+                    <span><i class="bi bi-car-front me-1"></i>@s.VehicleType</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div><small class="text-muted d-block">Hourly rate</small><span class="slot-price">@s.HourlyRate.ToString("0.00") BDT</span></div>
+                    <i class="bi bi-p-circle fs-3 text-primary"></i>
+                </div>
+                @if (s.Status == SlotStatus.Available)
+                {
+                    <a asp-controller="Booking" asp-action="Create" asp-route-slotId="@s.SlotID" class="btn btn-primary mt-auto">Reserve This Slot</a>
+                }
+                else
+                {
+                    <button class="btn btn-secondary mt-auto" disabled>Not Available</button>
+                }
+            </div>
+        </div>
+    }
+</div>

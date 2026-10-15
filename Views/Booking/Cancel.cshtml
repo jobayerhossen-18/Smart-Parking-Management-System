@@ -1,0 +1,32 @@
+@model Booking
+@{
+    ViewData["Title"] = Model.Status == BookingStatus.Confirmed ? "Cancel & Pay" : "Cancel Booking";
+    var isConfirmed = Model.Status == BookingStatus.Confirmed;
+    var duration = Model.ExpectedExitTime - Model.ExpectedEntryTime;
+    var hours = Math.Max(1, Math.Ceiling(duration.TotalHours));
+    var fee = (decimal)hours * (Model.ParkingSlot?.HourlyRate ?? 0);
+}
+<div class="row justify-content-center py-4">
+    <div class="col-lg-6">
+        <div class="card premium-card p-4 p-md-5">
+            <span class="eyebrow text-danger">@(isConfirmed ? "CONFIRMED RESERVATION" : "PENDING RESERVATION")</span>
+            <h2 class="fw-bold mt-2">@(isConfirmed ? "Cancel & Pay" : "Cancel Booking")</h2>
+            <p class="text-muted">Booking #@Model.BookingID · Slot @Model.ParkingSlot?.SlotNumber</p>
+            @if (isConfirmed)
+            {
+                <div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>This reservation is already confirmed. Cancellation requires payment for the reserved duration.</div>
+                <div class="summary-tile mb-3"><small>Reserved duration</small><strong>@hours hour(s)</strong></div>
+                <div class="d-flex justify-content-between align-items-center border rounded p-3 mb-4"><span class="fw-semibold">Cancellation charge</span><strong class="fs-4">@fee.ToString("0.00") BDT</strong></div>
+                <p class="small text-muted">After successful payment, the booking will be cancelled automatically and the reserved slot will become available.</p>
+            }
+            else
+            {
+                <p>Are you sure you want to cancel this pending booking? No parking fee will be charged.</p>
+            }
+            <form asp-controller="Booking" asp-action="Cancel" asp-route-id="@Model.BookingID" method="post">
+                <button type="submit" class="btn btn-danger btn-lg w-100">@(isConfirmed ? "Continue to Payment" : "Yes, Cancel Booking")</button>
+                <a asp-controller="Booking" asp-action="Index" class="btn btn-outline-secondary w-100 mt-2">Keep Booking</a>
+            </form>
+        </div>
+    </div>
+</div>

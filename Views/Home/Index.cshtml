@@ -1,0 +1,85 @@
+@{
+    ViewData["Title"] = "Smart Parking";
+}
+
+<section class="hero-section text-center mb-5">
+    <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill mb-4" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#bfdbfe;">
+        <span style="width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 5px rgba(52,211,153,.12);"></span>
+        Smart parking, simplified
+    </div>
+    <h1><i class="bi bi-p-circle-fill"></i> Park smarter.<br />Arrive easier.</h1>
+    <p class="lead mt-4 mb-4">Find an available space, reserve it in seconds, park with confidence, and pay only for the time you use.</p>
+    @if (User.Identity == null || !User.Identity.IsAuthenticated)
+    {
+        <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg me-2">Get Started <i class="bi bi-arrow-right ms-1"></i></a>
+        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">Customer Login</a>
+    }
+    else if (User.IsInRole(Roles.Customer))
+    {
+        <a asp-controller="ParkingSlot" asp-action="AvailableSlots" class="btn btn-light btn-lg">Find a Parking Slot <i class="bi bi-arrow-right ms-1"></i></a>
+    }
+    else
+    {
+        <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-light btn-lg">Open Dashboard <i class="bi bi-arrow-right ms-1"></i></a>
+    }
+</section>
+
+<div class="row g-4 mb-5">
+    <div class="col-lg-6">
+        <div class="home-stat">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                    <div class="text-uppercase fw-bold text-muted" style="font-size:.72rem;letter-spacing:.1em;">Live availability</div>
+                    <div class="display-5 fw-bold mt-2 text-success">@ViewBag.AvailableSlots <small class="fs-6 text-muted fw-semibold">/ @ViewBag.TotalSlots slots</small></div>
+                    <p class="text-muted mb-0 mt-2">Spaces ready for immediate reservation.</p>
+                </div>
+                <div class="icon-wrap"><i class="bi bi-broadcast"></i></div>
+            </div>
+            <div class="progress mt-4" style="height:7px;background:#eef2f7;">
+                <div class="progress-bar bg-success" role="progressbar" style="width:@(ViewBag.TotalSlots > 0 ? (ViewBag.AvailableSlots * 100 / ViewBag.TotalSlots) : 0)%"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="home-stat">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="icon-wrap"><i class="bi bi-lightning-charge-fill"></i></div>
+                <div><div class="text-uppercase fw-bold text-muted" style="font-size:.72rem;letter-spacing:.1em;">How it works</div><strong>Four simple steps</strong></div>
+            </div>
+            <div class="row g-2 small text-muted">
+                <div class="col-6"><i class="bi bi-1-circle-fill text-primary me-2"></i>Choose a slot</div>
+                <div class="col-6"><i class="bi bi-2-circle-fill text-primary me-2"></i>Confirm booking</div>
+                <div class="col-6"><i class="bi bi-3-circle-fill text-primary me-2"></i>Check in & park</div>
+                <div class="col-6"><i class="bi bi-4-circle-fill text-primary me-2"></i>Pay & exit</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-end mb-3">
+    <div><span class="eyebrow">BUILT FOR CONVENIENCE</span><h2 class="fw-bold mt-1 mb-0" style="letter-spacing:-.035em;">Everything you need to park</h2></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card feature-card">
+            <div class="feature-icon"><i class="bi bi-car-front-fill"></i></div>
+            <h5 class="mt-4">Vehicle Management</h5>
+            <p class="mb-0">Keep your vehicles organized and ready for your next parking session.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card feature-card">
+            <div class="feature-icon"><i class="bi bi-calendar2-check-fill"></i></div>
+            <h5 class="mt-4">Effortless Reservations</h5>
+            <p class="mb-0">Browse compatible spaces and reserve a slot without waiting for manual approval.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card feature-card">
+            <div class="feature-icon"><i class="bi bi-receipt-cutoff"></i></div>
+            <h5 class="mt-4">Transparent Billing</h5>
+            <p class="mb-0">Parking duration is calculated automatically and a receipt is generated after payment.</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+@model Booking
+@{
+    ViewData["Title"] = "Vehicle Check-In";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h3 class="mb-3 text-success"><i class="bi bi-box-arrow-in-right"></i> Vehicle Check-In</h3>
+            <dl class="row">
+                <dt class="col-sm-4">Booking ID</dt><dd class="col-sm-8">#@Model.BookingID</dd>
+                <dt class="col-sm-4">Vehicle</dt><dd class="col-sm-8">@Model.Vehicle?.RegistrationNumber</dd>
+                <dt class="col-sm-4">Parking Slot</dt><dd class="col-sm-8">@Model.ParkingSlot?.SlotNumber - @Model.ParkingSlot?.Floor</dd>
+            </dl>
+            <p class="text-muted">Confirm check-in now? This will mark the slot as occupied and record the actual check-in time.</p>
+            <form asp-controller="Parking" asp-action="CheckIn" asp-route-id="@Model.BookingID" method="post">
+                <button type="submit" class="btn btn-success">Confirm Check-In</button>
+                <a asp-controller="Booking" asp-action="Details" asp-route-id="@Model.BookingID" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

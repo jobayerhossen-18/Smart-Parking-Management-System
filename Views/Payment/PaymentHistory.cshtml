@@ -1,0 +1,56 @@
+@model List<Payment>
+@{
+    ViewData["Title"] = "Payment History";
+    bool isAdmin = User.IsInRole(Roles.Admin);
+}
+
+<h2 class="mb-3"><i class="bi bi-cash-coin"></i> Payment History</h2>
+
+<div class="card p-3">
+    @if (!Model.Any())
+    {
+        <p class="text-muted text-center mb-0 py-4">No payment records found.</p>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Payment ID</th>
+                    <th>Booking</th>
+                    @if (isAdmin) { <th>Customer</th> }
+                    <th>Amount (BDT)</th>
+                    <th>Method</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>#@p.PaymentID</td>
+                        <td>#@p.BookingID (@p.Booking?.ParkingSlot?.SlotNumber)</td>
+                        @if (isAdmin) { <td>@p.User?.FullName</td> }
+                        <td class="fw-semibold">@p.Amount.ToString("0.00")</td>
+                        <td>@p.PaymentMethod</td>
+                        <td>@p.PaymentDate.ToString("dd MMM yyyy, hh:mm tt")</td>
+                        <td>
+                            <span class="badge @(p.PaymentStatus == PaymentStatus.Paid ? "bg-success" : p.PaymentStatus == PaymentStatus.Failed ? "bg-danger" : "bg-secondary")">@p.PaymentStatus</span>
+                        </td>
+                        <td class="text-end">
+                            <a asp-controller="Payment" asp-action="Details" asp-route-id="@p.PaymentID" class="btn btn-sm btn-outline-primary">View</a>
+                            @if (isAdmin && p.PaymentStatus != PaymentStatus.Paid)
+                            {
+                                <form asp-controller="Payment" asp-action="MarkPaid" asp-route-id="@p.PaymentID" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-success">Mark Paid</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

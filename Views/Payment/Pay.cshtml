@@ -1,0 +1,46 @@
+@model Payment
+@{
+    ViewData["Title"] = "Secure Payment";
+}
+<div class="row justify-content-center py-4">
+    <div class="col-lg-8">
+        <div class="card premium-card overflow-hidden">
+            <div class="payment-hero p-4 p-md-5 text-white">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <span class="eyebrow">SECURE CHECKOUT</span>
+                        <h2 class="fw-bold mt-2 mb-1">Complete your parking payment</h2>
+                        <p class="mb-0 opacity-75">Payment is required before the vehicle can exit and the slot can be released.</p>
+                    </div>
+                    <i class="bi bi-shield-check fs-1"></i>
+                </div>
+            </div>
+            <div class="p-4 p-md-5">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4"><div class="summary-tile"><small>Booking</small><strong>#@Model.BookingID</strong></div></div>
+                    <div class="col-md-4"><div class="summary-tile"><small>Slot</small><strong>@Model.Booking?.ParkingSlot?.SlotNumber</strong></div></div>
+                    <div class="col-md-4"><div class="summary-tile"><small>Amount</small><strong>@Model.Amount.ToString("0.00") BDT</strong></div></div>
+                </div>
+                <h5 class="fw-bold mb-3">Choose payment method</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <form asp-action="StartOnline" method="post" class="h-100">
+                            <input type="hidden" name="id" value="@Model.PaymentID" />
+                            <button class="payment-option online w-100 h-100 text-start border-0" type="submit">
+                                <div class="payment-icon"><i class="bi bi-credit-card-2-front"></i></div>
+                                <div><h5>Pay Online</h5><p>bKash · Nagad · Visa · Mastercard</p><span>Continue to secure gateway <i class="bi bi-arrow-right"></i></span></div>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="payment-option offline h-100">
+                            <div class="payment-icon"><i class="bi bi-shop"></i></div>
+                            <div><h5>Pay Offline</h5><p>Pay at the parking counter</p><span>Staff confirmation required</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-light border mt-4 mb-0"><i class="bi bi-info-circle me-2"></i>For offline payment, the slot remains locked until an administrator confirms the cash/counter payment.</div>
+            </div>
+        </div>
+    </div>
+</div>

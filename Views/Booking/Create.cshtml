@@ -1,0 +1,54 @@
+@model Booking
+@{
+    ViewData["Title"] = "Reserve a Parking Slot";
+    var vehicles = (List<Vehicle>)ViewBag.Vehicles;
+    var slots = (List<ParkingSlot>)ViewBag.Slots;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card p-4">
+            <h3 class="mb-3"><i class="bi bi-calendar-plus"></i> Reserve a Parking Slot</h3>
+            <form asp-controller="Booking" asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-2"></div>
+
+                <div class="mb-3">
+                    <label asp-for="VehicleID" class="form-label"></label>
+                    <select asp-for="VehicleID" class="form-select">
+                        <option value="">-- Select a vehicle --</option>
+                        @foreach (var v in vehicles)
+                        {
+                            <option value="@v.VehicleID">@v.RegistrationNumber (@v.VehicleType)</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="SlotID" class="form-label"></label>
+                    <select asp-for="SlotID" class="form-select">
+                        <option value="">-- Select a parking slot --</option>
+                        @foreach (var s in slots)
+                        {
+                            <option value="@s.SlotID">@s.SlotNumber - @s.Floor (@s.VehicleType, @s.HourlyRate.ToString("0.00") BDT/hr)</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="BookingDate" class="form-label"></label>
+                    <input asp-for="BookingDate" type="date" class="form-control" />
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ExpectedEntryTime" class="form-label"></label>
+                        <input asp-for="ExpectedEntryTime" type="datetime-local" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ExpectedExitTime" class="form-label"></label>
+                        <input asp-for="ExpectedExitTime" type="datetime-local" class="form-control" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                <a asp-controller="ParkingSlot" asp-action="AvailableSlots" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
